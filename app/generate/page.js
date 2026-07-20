@@ -2,9 +2,11 @@
 import React from 'react'
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
+import { useState } from 'react'
 
 const Generate = () => {
     const [link, setlink] = useState("")
+    const [handle, sethandle] = useState("")
     const [linktext, setlinktext] = useState("")
 
 
@@ -34,13 +36,13 @@ const Generate = () => {
 
     return (
         <div className='bg-[#225AC0] min-h-screen grid grid-cols-2'>
-            <ToastContainer />
+            {/* <ToastContainer /> */}
             <div className="col1 flex justify-center items-center flex-col">
                 <h1 className='font-bold text-4xl'>Join Linktree</h1>
                 <div className='flex flex-col gap-5 my-8'>
                     <h2 className='font-semibold text-2xl'>Step 1: Claim your handle</h2>
                     <div className='mx-4'>
-                        <input className='bg-white px-4 py-2 mx-2 my-2 focus:outline-blue-500 rounded-4xl' type="text" placeholder="Choose a handle"></input>
+                        <input onChange={e=>{sethandle(e.target.value)}} className='bg-white px-4 py-2 mx-2 my-2 focus:outline-blue-500 rounded-4xl' type="text" placeholder="Choose a handle"></input>
                     </div>
                     <h2 className='font-semibold text-2xl'>Step 2: Add links</h2>
                     <div className='mx-4'>

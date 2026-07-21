@@ -72,8 +72,8 @@ const Generate = () => {
                         <h2 className='font-semibold text-2xl'>Step 2: Add links</h2>
                         {links && links.map((item, index) => {
                             return <div key={index} className='mx-4'>
-                                <input value={item.link || ""} onChange={e => { handleChange(index, e.target.value, item.linktext) }} className='bg-white px-4 py-2 mx-2 my-2 focus:outline-blue-500 rounded-4xl' type="text" placeholder="Enter link"></input>
                                 <input value={item.linktext || ""} onChange={e => { handleChange(index, item.link, e.target.value) }} className='bg-white px-4 py-2 mx-2 my-2 focus:outline-blue-500 rounded-4xl' type="text" placeholder="Enter link text"></input>
+                                <input value={item.link || ""} onChange={e => { handleChange(index, e.target.value, item.linktext) }} className='bg-white px-4 py-2 mx-2 my-2 focus:outline-blue-500 rounded-4xl' type="text" placeholder="Enter link"></input>
                             </div>
                         })}
                         <button onClick={() => addLink()} className='p-5 py-2 mt-4 mx-7 bg-slate-900 text-white font-bold cursor-pointer rounded-3xl'>+ Add Link</button>

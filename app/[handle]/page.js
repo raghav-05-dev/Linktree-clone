@@ -1,8 +1,18 @@
 import Link from "next/link"
+import clientPromise from "@/lib/mongodb"
+import { notFound } from "next/navigation";
 
 export default async function Page({ params }) {
     const handle = (await params).handle
-    const item = {
+    const client = await clientPromise;
+    const db = client.db("Linktree")
+    const collection = db.collection("links")
+    const item = await collection.findOne({ handle: handle })
+    if (!item) {
+        return notFound()
+    }
+
+    const item2 = {
         "_id": {
             "$oid": "6a5f2e8b8213f1272d36a5da"
         },
@@ -17,7 +27,7 @@ export default async function Page({ params }) {
     }
 
     return <div className="flex min-h-screen justify-center items-start py-20 bg-yellow-400">
-        <div className="photo flex flex-col justify-center items-center">
+        {item &&<div className="photo flex flex-col justify-center items-center">
             <img width={200} height={200} src={item.pic} alt="" className="" />
             <span className="font-bold text-xl">@{item.handle}</span>
             <div className="links">
@@ -27,6 +37,6 @@ export default async function Page({ params }) {
                     </div></Link>
                 })}
             </div>
-        </div>
+        </div>}
     </div>
 }

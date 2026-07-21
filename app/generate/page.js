@@ -3,12 +3,14 @@ import React from 'react'
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { useState } from 'react'
+import { useSearchParams } from 'next/navigation'
 
 const Generate = () => {
     // const [link, setlink] = useState("")
     // const [linktext, setlinktext] = useState("")
+    const searchParams = useSearchParams()
     const [links, setLinks] = useState([{ link: "", linktext: "" }])
-    const [handle, sethandle] = useState("")
+    const [handle, sethandle] = useState(searchParams.get('handle'))
     const [pic, setpic] = useState("")
     const handleChange = (index, link, linktext) => {
         setLinks((initialLinks) => {
@@ -26,17 +28,15 @@ const Generate = () => {
         setLinks(links.concat([{ link: "", linktext: "" }]))
     }
 
-
-    const submitLinks = async (text, link, handle) => {
+    const submitLinks = async () => {
         const myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/json");
 
         const raw = JSON.stringify({
-            "links": link,
-            "handle": handle,
-            "pic": pic
+            links,
+            handle,
+            pic
         });
-
         const requestOptions = {
             method: "POST",
             headers: myHeaders,
@@ -46,7 +46,15 @@ const Generate = () => {
 
         const r = await fetch("http://localhost:3000/api/add", requestOptions)
         const result = await r.json()
-        toast(result.message)
+        if (result.success) {
+            toast.success(result.message)
+            setLinks([])
+            setpic("")
+            sethandle("")
+        }
+        else {
+            toast.error(result.message)
+        }
     }
 
 
@@ -64,8 +72,8 @@ const Generate = () => {
                         <h2 className='font-semibold text-2xl'>Step 2: Add links</h2>
                         {links && links.map((item, index) => {
                             return <div key={index} className='mx-4'>
-                                <input value={item.link || ""} onChange={e => { handleChange(index, e.target.value, item.linktext) }} className='bg-white px-4 py-2 mx-2 my-2 focus:outline-blue-500 rounded-4xl' type="text" placeholder="Enter link text"></input>
-                                <input value={item.linktext || ""} onChange={e => { handleChange(index, item.link, e.target.value) }} className='bg-white px-4 py-2 mx-2 my-2 focus:outline-blue-500 rounded-4xl' type="text" placeholder="Enter link"></input>
+                                <input value={item.link || ""} onChange={e => { handleChange(index, e.target.value, item.linktext) }} className='bg-white px-4 py-2 mx-2 my-2 focus:outline-blue-500 rounded-4xl' type="text" placeholder="Enter link"></input>
+                                <input value={item.linktext || ""} onChange={e => { handleChange(index, item.link, e.target.value) }} className='bg-white px-4 py-2 mx-2 my-2 focus:outline-blue-500 rounded-4xl' type="text" placeholder="Enter link text"></input>
                             </div>
                         })}
                         <button onClick={() => addLink()} className='p-5 py-2 mt-4 mx-7 bg-slate-900 text-white font-bold cursor-pointer rounded-3xl'>+ Add Link</button>
@@ -75,7 +83,7 @@ const Generate = () => {
                         <h2 className='font-semibold text-2xl'>Step 3: Add a profile picture, and you are done</h2>
                         <div className='mx-4 flex flex-col'>
                             <input value={pic || ""} onChange={e => { setpic(e.target.value) }} className='bg-white px-4 py-2 mx-2 my-2 focus:outline-blue-500 rounded-4xl' type="text" placeholder="Enter link to your picture" />
-                            <button onClick={() => { submitLinks() }} className='p-5 py-2 mx-2 my-5 bg-slate-900 text-white font-bold cursor-pointer rounded-3xl w-fit'>Create your Linktree</button>
+                            <button disabled={pic=="" || handle=="" || links[0].linktext==""} onClick={() => { submitLinks() }} className='disabled:bg-slate-600 p-5 py-2 mx-2 my-5 bg-slate-900 text-white font-bold cursor-pointer rounded-3xl w-fit'>Create your Linktree</button>
                         </div>
                     </div>
                 </div>
